@@ -77,17 +77,96 @@ if (userStatus === 'Invited') {
 
 ### 3. SAML Scripts
 
-**What it is:** JavaScript that runs when CyberArk Identity issues a SAML assertion to a service provider. Used to customize the claims/attributes sent in the SAML token.
+**What it is:** JavaScript that runs when CyberArk Identity issues a SAML assertion to a service provider. Configured in the **SAML Response** tab of a SAML application. Used to control what is asserted — who the subject is, what attributes are sent, and how the assertion is signed.
 
 **When it runs:** At SAML SSO time, when a user accesses an app configured with SAML.
 
-**Capabilities:** Similar to Application Policy Scripts — supports `module()` imports and database queries. Designed specifically for claim mapping and token enrichment.
+**Entry point:**
+> Apps > [SAML App] > SAML Response > Custom Logic
 
-**What you can do:**
-- Add, modify, or remove SAML attributes/claims
-- Pull data from the database to enrich the assertion
-- Map CyberArk attributes to SP-expected attribute names
-- Conditionally include attributes based on user type or group
+**Core objects available:**
+
+- **`LoginUser`** — the authenticated user (read/write)
+- **`Application`** — the target app (read-only)
+
+#### LoginUser Properties & Methods
+
+```javascript
+LoginUser.Username              // User identity for the SAML assertion
+LoginUser.FirstName             // Parsed from DisplayName if not set directly
+LoginUser.LastName
+LoginUser.ServiceType           // "ADProxy", "LDAPProxy", "CDS", or "FDS"
+LoginUser.ServiceName           // Named directory service identifier
+LoginUser.GroupNames            // Direct group memberships (array)
+LoginUser.GroupNames2           // Group name attributes only
+LoginUser.RoleNames             // CyberArk Identity role memberships (array)
+LoginUser.EffectiveGroupNames   // Effective (nested) group memberships
+LoginUser.GroupDNs              // Group distinguished names
+LoginUser.EffectiveGroupDNs
+
+LoginUser.Get('adAttribute')          // Single AD attribute value
+LoginUser.GetValues('adAttribute')    // Multi-valued AD attribute (returns array)
+LoginUser.GetGroupAttributeValues('adAttribute')  // Group-specific AD values
+```
+
+#### Assertion-Set Methods
+
+These are the functions that actually build the SAML response:
+
+```javascript
+setSubjectName(username)         // Subject NameID — who is logging in
+setIssuer(issuer)                // Issuer entity ID
+setAudience(audience)            // Audience restriction URL
+setRecipient(recipient)          // ACS URL in SubjectConfirmationData
+setServiceUrl(targetUrl)         // TARGET form element value
+setHttpDestination(responseUrl)  // HTTP POST binding destination
+setAttribute(name, value)        // Single-value SAML attribute
+setAttributeArray(name, array)   // Multi-value SAML attribute
+setVersion('2')                  // SAML version: "1" (1.1) or "2" (2.0, default)
+setSignatureType('Response')     // "Response" or "Assertion" (default: Response)
+setDigestMethodAlgorithm('sha256') // sha1, sha256, sha384, sha512
+```
+
+#### Examples
+
+**Set subject based on directory type:**
+```javascript
+if (LoginUser.ServiceType == 'LDAPProxy') {
+    setSubjectName(LoginUser.Get('uid'));
+} else {
+    setSubjectName(LoginUser.Username);
+}
+```
+
+**Map attributes to SP-expected names:**
+```javascript
+setAttribute('Email', LoginUser.Get('mail'));
+setAttribute('FirstName', LoginUser.FirstName);
+setAttribute('LastName', LoginUser.LastName);
+setAttributeArray('Groups', LoginUser.RoleNames);
+```
+
+**Conditionally add attributes:**
+```javascript
+if (LoginUser.ServiceType == 'ADProxy') {
+    setAttribute('Department', LoginUser.Get('department'));
+    setAttribute('EmployeeID', LoginUser.Get('employeeID'));
+}
+```
+
+**Escape backslashes in attribute values:**
+```javascript
+// Backslash must be doubled in JS strings
+setAttribute('Domain', 'CORP\\' + LoginUser.Username);
+```
+
+#### Gotchas
+
+- `LoginUser.Get()` queries the directory connector on each call — `Username` is cached but other attributes are not. Minimize calls in performance-sensitive scripts.
+- If `DisplayName` is null and `FirstName`/`LastName` are not set explicitly, the script will fail. Always handle null cases.
+- The default template script shown in the editor is not a working custom script — it must be modified before saving.
+
+**Docs:** https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/samlcustscript.htm
 
 ---
 
@@ -144,5 +223,6 @@ If an attribute returns `null` and you expected a value, check the Appendix in `
 
 - [Dynamic Roles — CyberArk Docs](https://docs.cyberark.com/identity/latest/en/content/coreservices/getstarted/create-roles.htm#tabset-1-tab-2)
 - [Application Policy Scripts / SqlQuery module](https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/jsdatapolicyscript.htm#SqlQuerymodule)
+- [SAML Custom Scripts](https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/samlcustscript.htm)
 - [User Data Dictionary](https://docs.cyberark.com/identity/latest/en/content/developer/data-dictionary/user.htm)
 - [Dynamic Role attribute reference — README.md](README.md)
