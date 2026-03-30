@@ -45,4 +45,4 @@ Ready-to-use policy scripts sourced from official CyberArk documentation. Paste 
 
 - [Sample Policy Scripts — CyberArk Docs](https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/usesamplepolscript.htm)
 - [Policy Script Reference](https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/jsdatapolicyscript.htm)
-- [Scripting Contexts Comparison — SCRIPTING-CONTEXTS.md](../SCRIPTING-CONTEXTS.md)
+- [Scripting Contexts Comparison — README.md](../README.md)

@@ -77,4 +77,4 @@ There are two distinct SAML scripting contexts in CyberArk Identity. They serve 
 
 - [SAML User Map Script — CyberArk Docs](https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/samlusermapscript.htm)
 - [SAML Response Script — CyberArk Docs](https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/samlcustscript.htm)
-- [Scripting Contexts Comparison — SCRIPTING-CONTEXTS.md](../SCRIPTING-CONTEXTS.md)
+- [Scripting Contexts Comparison — README.md](../README.md)
