@@ -1,5 +1,7 @@
 # CyberArk Identity - Application Policy Script Examples
 
+> **Disclaimer:** This documentation is community-compiled based on testing and research. If something does not work or you encounter uncertainty, always refer to the official CyberArk documentation: https://docs.cyberark.com/identity/latest/en/content/resources/_topnav/cc_home.htm
+
 Ready-to-use policy scripts sourced from official CyberArk documentation. Paste any script into the Policy tab of an application and adjust the placeholder values for your environment.
 
 ## How to Use

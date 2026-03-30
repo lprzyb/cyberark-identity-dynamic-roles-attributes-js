@@ -1,5 +1,7 @@
 # CyberArk Identity - User Object Reference for Dynamic Roles
 
+> **Disclaimer:** This documentation is community-compiled based on testing and research. If something does not work or you encounter uncertainty, always refer to the official CyberArk documentation: https://docs.cyberark.com/identity/latest/en/content/resources/_topnav/cc_home.htm
+
 Complete reference for the `User` object available in CyberArk Identity Dynamic Role scripts.
 
 > **Choosing the right scripting context?** See [SCRIPTING-CONTEXTS.md](SCRIPTING-CONTEXTS.md) for a comparison of Dynamic Roles, Application Policy Scripts, and SAML Scripts — including when to use each and why some attributes are unavailable here.
