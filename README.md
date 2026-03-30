@@ -2,6 +2,8 @@
 
 Complete reference for the `User` object available in CyberArk Identity Dynamic Role scripts.
 
+> **Choosing the right scripting context?** See [SCRIPTING-CONTEXTS.md](SCRIPTING-CONTEXTS.md) for a comparison of Dynamic Roles, Application Policy Scripts, and SAML Scripts — including when to use each and why some attributes are unavailable here.
+
 ## Example Scripts
 
 Ready-to-use Dynamic Role scripts. Paste any of these into the Dynamic Role script editor and adjust the highlighted values for your environment.
@@ -246,3 +248,4 @@ The following attributes are **NOT available in Dynamic Role scripts** but may b
 - [Dynamic Roles](https://docs.cyberark.com/identity/latest/en/content/coreservices/getstarted/create-roles.htm)
 - [Policy Scripts](https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/jsdatapolicyscript.htm)
 - [SQL Queries](https://docs.cyberark.com/identity/latest/en/content/developer/use-queries.htm)
+- [Scripting Contexts Comparison — SCRIPTING-CONTEXTS.md](SCRIPTING-CONTEXTS.md)
