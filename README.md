@@ -2,6 +2,20 @@
 
 Complete reference for the `User` object available in CyberArk Identity Dynamic Role scripts.
 
+## Example Scripts
+
+Ready-to-use Dynamic Role scripts. Paste any of these into the Dynamic Role script editor and adjust the highlighted values for your environment.
+
+| File | Description | Credit |
+|------|-------------|--------|
+| [`dynamic-role-aad-users.js`](dynamic-role-aad-users.js) | Match Azure Active Directory (AAD) users | John Qualres |
+| [`dynamic-role-domain-suffix.js`](dynamic-role-domain-suffix.js) | Match users by UPN domain suffix | Chad Miller |
+| [`dynamic-role-missing-attribute.js`](dynamic-role-missing-attribute.js) | Match users missing a specific attribute | — |
+| [`dynamic-role-mobile-number.js`](dynamic-role-mobile-number.js) | Match users that have a mobile number set (AD + CUS) | — |
+| [`dynamic-role-blank-property.js`](dynamic-role-blank-property.js) | Match users where a property is absent/null/blank | — |
+| [`dynamic-role-dump-attributes.js`](dynamic-role-dump-attributes.js) | Dump all attribute names visible to Dynamic Roles | — |
+| [`dynamic-role-by-ou.js`](dynamic-role-by-ou.js) | Match AD users by Organizational Unit (OU) | Kevin Creason |
+
 ## How to Use This Script
 
 1. **Open CyberArk Identity Admin Portal**
@@ -73,6 +87,14 @@ var dept = User.Properties.Get('department_');
 ```
 
 Both methods are equivalent.
+
+### Option 3: User.Properties.Properties (Advanced / Raw Directory Attributes)
+```javascript
+var dn     = User.Properties.Properties['distinguishedName'];  // AD
+var mobile = User.Properties.Properties['mobile'];             // AD
+```
+
+These raw directory attributes are **not** listed in `PropertyNames` and are not accessible via `User.Get()`. Use `dynamic-role-dump-attributes.js` to enumerate what's available for a given user.
 
 ## Helper Methods
 

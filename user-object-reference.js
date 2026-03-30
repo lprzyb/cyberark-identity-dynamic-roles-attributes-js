@@ -87,10 +87,24 @@ try {
 }
 
 // ========================================
-// SECTION 3: HELPER METHODS
+// SECTION 3: ADVANCED PROPERTIES (Raw Directory Attributes)
 // ========================================
 trace("");
-trace("=== SECTION 3: HELPER METHODS ===");
+trace("=== SECTION 3: ADVANCED PROPERTIES (User.Properties.Properties) ===");
+trace("Access Pattern: User.Properties.Properties['attributeName']");
+trace("Note: These are raw directory attributes NOT listed in PropertyNames.");
+trace("      Includes AD attributes like distinguishedName, sAMAccountName, mobile.");
+trace("");
+trace("Available advanced property names (see dynamic-role-dump-attributes.js to enumerate values).");
+trace("Example access:");
+trace("  var dn = User.Properties.Properties['distinguishedName'];");
+trace("  var mobile = User.Properties.Properties['mobile'];  // AD users");
+
+// ========================================
+// SECTION 4: HELPER METHODS
+// ========================================
+trace("");
+trace("=== SECTION 4: HELPER METHODS ===");
 trace("");
 
 // Test Has()
@@ -121,10 +135,10 @@ try {
 }
 
 // ========================================
-// SECTION 4: ROLE/GROUP METHODS
+// SECTION 5: ROLE/GROUP METHODS
 // ========================================
 trace("");
-trace("=== SECTION 4: ROLE/GROUP METHODS ===");
+trace("=== SECTION 5: ROLE/GROUP METHODS ===");
 trace("");
 trace("Available methods:");
 trace("  User.InRole(roleId)");
