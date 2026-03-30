@@ -15,14 +15,33 @@ There are two distinct SAML scripting contexts in CyberArk Identity. They serve 
 > Apps > [SAML App] > Account Mapping tab > "Use Account Mapping Script"
 
 **Available objects:**
-- `LoginUser.Username` — read/write; set this to define the mapped username
-- `LoginUser.GroupNames` — array of group memberships
-- `LoginUser.ServiceName` — directory source name
-- `LoginUser.ServiceType` — directory source type: `"ADProxy"`, `"LDAPProxy"`, `"CDS"`, `"FDS"`
-- `LoginUser.Get('attribute')` — retrieve a directory attribute (e.g. `'mail'`, `'uid'`)
-- `Application.Get('Name')` — application name and other app properties
 
-**File:** [`saml-user-map-example.js`](saml-user-map-example.js)
+| Property / Method | Notes |
+|---|---|
+| `LoginUser.Username` | read/write — set this to define the mapped username |
+| `LoginUser.Shortname` | short username without domain — works for both AD and Cloud Directory |
+| `LoginUser.Email` | user's email address |
+| `LoginUser.FirstName` | first name |
+| `LoginUser.LastName` | last name |
+| `LoginUser.Password` | writable — can pass a password to the SP |
+| `LoginUser.GroupNames` | array of group memberships |
+| `LoginUser.ServiceName` | directory source name |
+| `LoginUser.ServiceType` | `"ADProxy"`, `"LDAPProxy"`, `"CDS"`, `"FDS"` |
+| `LoginUser.Get('attribute')` | retrieve a directory attribute (e.g. `'mail'`, `'uid'`) |
+| `Application.Get('Name')` | application name and other app properties |
+
+**Additional functions available in this context:**
+
+```javascript
+createWebRequest(url)   // create an HTTP request object
+readContent(request)    // execute request, return response body as string
+```
+
+> These enable API calls from within the mapping script — e.g. pulling credentials from CyberArk CCP. Evaluate security implications before using in production.
+
+**Files:**
+- [`saml-user-map-example.js`](saml-user-map-example.js) — generic mapping patterns
+- [`saml-account-mapping-examples.js`](saml-account-mapping-examples.js) — real-world examples (shortname, domain prefix, CCP API, email parsing)
 
 ---
 
@@ -77,4 +96,5 @@ There are two distinct SAML scripting contexts in CyberArk Identity. They serve 
 
 - [SAML User Map Script — CyberArk Docs](https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/samlusermapscript.htm)
 - [SAML Response Script — CyberArk Docs](https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/samlcustscript.htm)
+- [How to log into a SAML app with a different username — CyberArk Community KB](https://community.cyberark.com/s/article/How-to-log-into-a-SAML-application-with-a-different-username-than-the-user-s-CyberArk-username)
 - [Scripting Contexts Comparison — README.md](../README.md)

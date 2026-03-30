@@ -52,6 +52,7 @@ Ready-to-use policy scripts sourced from official CyberArk documentation. Paste 
 
 | File | Description |
 |------|-------------|
+| [`block-by-status.js`](block-by-status.js) | Block access for any user whose Status is not Active (queries tenant DB) |
 | [`custom-user-attributes.js`](custom-user-attributes.js) | Control access based on a custom user attribute |
 
 ### Office 365
