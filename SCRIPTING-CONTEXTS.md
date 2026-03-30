@@ -116,10 +116,22 @@ var status = result[0].StatusEnum;  // "Active", "Invited", "Suspended"
 **`module('Utils')`** — geolocation helpers:
 ```javascript
 var utils = module('Utils');
+
+// Full location object
 var loc = utils.getIPLocation(context.ipAddress);
 // loc.city, loc.countryCode, loc.countryName, loc.latitude, loc.longitude
 
+// Shorthand — country code only
+var country = utils.getIpCountryCode(context.ipAddress);  // e.g. "US", "PL"
+
 var km = utils.getGeoDistance(lat1, lat2, lon1, lon2);  // distance in kilometers
+```
+
+**`module('Device')`** — device enrollment status:
+```javascript
+var dmod = module('Device');
+var device = dmod.getDevice();
+device.isManaged  // boolean: true if enrolled in CyberArk Identity
 ```
 
 #### Examples
@@ -130,7 +142,7 @@ if (!context.onPrem) {
     var umod = module('User');
     var user = umod.GetCurrentUser();
     if (user.InRole('sysadmin')) {
-        policy.RequiredLevel = 2;
+        policy.RequiredLevel = 2;  // requires default auth profile — user still must authenticate
     } else {
         policy.Locked = true;
         policy.Reason = 'Remote access requires sysadmin role';
@@ -270,15 +282,16 @@ setAttribute('Domain', 'CORP\\' + LoginUser.Username);
 | Capability | Dynamic Role | App Policy Script | SAML Script |
 |---|---|---|---|
 | Runs during | Login | App access / portal refresh | SAML SSO |
-| `module()` support | No | Yes | Yes |
-| SQL / DB queries | No | Yes | Yes |
-| User `Status` / `StatusEnum` | No (DB only) | Yes | Yes |
+| `module()` support | No | Yes | Not documented |
+| SQL / DB queries | No | Yes | Not documented |
+| User `Status` / `StatusEnum` | No (DB only) | Yes | Not documented |
 | `User.Get()` / `LoginUser.Get()` attributes | Limited set | Extended set | Extended set |
-| `User.Properties.Properties` (raw dir attrs) | Yes | Yes | Yes |
+| `User.Properties.Properties` (raw dir attrs) | Yes | No | No |
 | Role/group membership checks | Yes | Yes (`user.InRole()`) | Yes (`LoginUser.RoleNames`) |
 | User risk level | No | Yes (`user.GetRiskLevel()`) | No |
 | IP address / geolocation | No | Yes (`context`, `module('Utils')`) | No |
 | OS / browser detection | No | Yes (`client` object) | No |
+| Device enrollment check | No | Yes (`module('Device')`) | No |
 | Block app access | No | Yes (`policy.Locked`) | No |
 | Modify auth profile | No | Yes (`policy.AuthenticationProfile`) | No |
 | Customize SAML claims | No | No | Yes |

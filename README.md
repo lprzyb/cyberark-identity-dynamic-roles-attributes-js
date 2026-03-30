@@ -249,3 +249,4 @@ The following attributes are **NOT available in Dynamic Role scripts** but may b
 - [Policy Scripts](https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/jsdatapolicyscript.htm)
 - [SQL Queries](https://docs.cyberark.com/identity/latest/en/content/developer/use-queries.htm)
 - [Scripting Contexts Comparison — SCRIPTING-CONTEXTS.md](SCRIPTING-CONTEXTS.md)
+- [Application Policy Script Examples — policy-scripts/](policy-scripts/README.md)
