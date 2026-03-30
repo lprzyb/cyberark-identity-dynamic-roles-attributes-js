@@ -1,37 +1,68 @@
-# CyberArk Identity - Application Policy Script Examples
+# CyberArk Identity — Application Policy Script Examples
 
 > **Disclaimer:** This documentation is community-compiled based on testing and research. If something does not work or you encounter uncertainty, always refer to the official CyberArk documentation: https://docs.cyberark.com/identity/latest/en/content/resources/_topnav/cc_home.htm
 
 Ready-to-use policy scripts sourced from official CyberArk documentation. Paste any script into the Policy tab of an application and adjust the placeholder values for your environment.
 
-## How to Use
-
-1. **Open CyberArk Identity Admin Portal**
-2. **Navigate to**: Apps & Widgets > [Application] > Policy tab
-3. **Select**: "Use script to specify authentication rules"
-4. **Paste** the script content and replace any `<placeholder>` values
-5. **Test**: Click "Test" to run against your current login context — trace output appears in the Trace section
-6. **Save**
+**Entry point:**
+> Apps & Widgets > [Application] > Policy tab > "Use script to specify authentication rules"
 
 > **Important:** When a policy script is active, all UI-configured authentication rules are ignored. The script is the sole authority.
 
+---
+
+## How to Use
+
+1. Open the CyberArk Identity Admin Portal
+2. Navigate to **Apps & Widgets** > select your application > **Policy** tab
+3. Select **"Use script to specify authentication rules"**
+4. Paste the script and replace any `<placeholder>` values
+5. Click **Test** to validate — trace output appears in the Trace section
+6. **Save**
+
+---
+
 ## Script Index
+
+### General Access Control
 
 | File | Description |
 |------|-------------|
 | [`starter-sample.js`](starter-sample.js) | Foundation example: on-prem check, role-based auth profile assignment |
-| [`block-by-ad-groups.js`](block-by-ad-groups.js) | Block external access for users in specified AD groups |
-| [`block-by-country.js`](block-by-country.js) | Block external access from outside a specified country |
 | [`block-by-role.js`](block-by-role.js) | Block external access for users in specified roles |
-| [`block-by-time.js`](block-by-time.js) | Block access outside configured business hours and time zone |
-| [`o365-block-all-but-activesync.js`](o365-block-all-but-activesync.js) | Office 365: allow only Exchange ActiveSync externally |
-| [`o365-block-all-but-web.js`](o365-block-all-but-web.js) | Office 365: allow only web browser access externally |
-| [`o365-block-external-rich-clients.js`](o365-block-external-rich-clients.js) | Office 365: block Outlook, MAPI, ActiveSync, WebServices externally |
-| [`require-mfa-unmanaged-devices.js`](require-mfa-unmanaged-devices.js) | Require default auth profile for devices not enrolled in CyberArk Identity |
-| [`custom-user-attributes.js`](custom-user-attributes.js) | Control access based on a custom user attribute |
+| [`block-by-ad-groups.js`](block-by-ad-groups.js) | Block external access for users in specified AD groups |
 | [`limit-access-specific-roles.js`](limit-access-specific-roles.js) | Allow access only to users holding roles matching a DB query pattern |
 | [`auth-profile-by-role.js`](auth-profile-by-role.js) | Apply different auth profiles per role; block everyone else |
+
+### Location & Time
+
+| File | Description |
+|------|-------------|
+| [`block-by-country.js`](block-by-country.js) | Block external access from outside a specified country |
+| [`block-by-time.js`](block-by-time.js) | Block access outside configured business hours and time zone |
+
+### Device & Risk
+
+| File | Description |
+|------|-------------|
+| [`require-mfa-unmanaged-devices.js`](require-mfa-unmanaged-devices.js) | Require default auth profile for devices not enrolled in CyberArk Identity |
 | [`limit-by-risk-level.js`](limit-by-risk-level.js) | Block access if user risk level is not Normal |
+
+### User Attributes
+
+| File | Description |
+|------|-------------|
+| [`custom-user-attributes.js`](custom-user-attributes.js) | Control access based on a custom user attribute |
+
+### Office 365
+
+| File | Description |
+|------|-------------|
+| [`o365-block-all-but-activesync.js`](o365-block-all-but-activesync.js) | Allow only Exchange ActiveSync externally |
+| [`o365-block-all-but-web.js`](o365-block-all-but-web.js) | Allow only web browser access externally |
+| [`o365-block-external-rich-clients.js`](o365-block-external-rich-clients.js) | Block Outlook, MAPI, ActiveSync, WebServices externally |
+
+---
 
 ## Key Concepts
 

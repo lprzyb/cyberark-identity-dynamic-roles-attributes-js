@@ -1,4 +1,4 @@
-# CyberArk Identity - SAML Script Examples
+# CyberArk Identity — SAML Script Examples
 
 > **Disclaimer:** This documentation is community-compiled based on testing and research. If something does not work or you encounter uncertainty, always refer to the official CyberArk documentation: https://docs.cyberark.com/identity/latest/en/content/resources/_topnav/cc_home.htm
 
