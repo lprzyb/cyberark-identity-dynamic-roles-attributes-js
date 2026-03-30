@@ -10,13 +10,13 @@ Ready-to-use Dynamic Role scripts. Paste any of these into the Dynamic Role scri
 
 | File | Description | Credit |
 |------|-------------|--------|
-| [`dynamic-role-aad-users.js`](dynamic-role-aad-users.js) | Match Azure Active Directory (AAD) users | John Qualres |
-| [`dynamic-role-domain-suffix.js`](dynamic-role-domain-suffix.js) | Match users by UPN domain suffix | Chad Miller |
-| [`dynamic-role-missing-attribute.js`](dynamic-role-missing-attribute.js) | Match users missing a specific attribute | — |
-| [`dynamic-role-mobile-number.js`](dynamic-role-mobile-number.js) | Match users that have a mobile number set (AD + CUS) | — |
-| [`dynamic-role-blank-property.js`](dynamic-role-blank-property.js) | Match users where a property is absent/null/blank | — |
-| [`dynamic-role-dump-attributes.js`](dynamic-role-dump-attributes.js) | Dump all attribute names visible to Dynamic Roles | — |
-| [`dynamic-role-by-ou.js`](dynamic-role-by-ou.js) | Match AD users by Organizational Unit (OU) | Kevin Creason |
+| [`dynamic-role-scripts/dynamic-role-aad-users.js`](dynamic-role-scripts/dynamic-role-aad-users.js) | Match Azure Active Directory (AAD) users | John Qualres |
+| [`dynamic-role-scripts/dynamic-role-domain-suffix.js`](dynamic-role-scripts/dynamic-role-domain-suffix.js) | Match users by UPN domain suffix | Chad Miller |
+| [`dynamic-role-scripts/dynamic-role-missing-attribute.js`](dynamic-role-scripts/dynamic-role-missing-attribute.js) | Match users missing a specific attribute | — |
+| [`dynamic-role-scripts/dynamic-role-mobile-number.js`](dynamic-role-scripts/dynamic-role-mobile-number.js) | Match users that have a mobile number set (AD + CUS) | — |
+| [`dynamic-role-scripts/dynamic-role-blank-property.js`](dynamic-role-scripts/dynamic-role-blank-property.js) | Match users where a property is absent/null/blank | — |
+| [`dynamic-role-scripts/dynamic-role-dump-attributes.js`](dynamic-role-scripts/dynamic-role-dump-attributes.js) | Dump all attribute names visible to Dynamic Roles | — |
+| [`dynamic-role-scripts/dynamic-role-by-ou.js`](dynamic-role-scripts/dynamic-role-by-ou.js) | Match AD users by Organizational Unit (OU) | Kevin Creason |
 
 ## How to Use This Script
 
@@ -250,3 +250,4 @@ The following attributes are **NOT available in Dynamic Role scripts** but may b
 - [SQL Queries](https://docs.cyberark.com/identity/latest/en/content/developer/use-queries.htm)
 - [Scripting Contexts Comparison — SCRIPTING-CONTEXTS.md](SCRIPTING-CONTEXTS.md)
 - [Application Policy Script Examples — policy-scripts/](policy-scripts/README.md)
+- [SAML Script Examples — SAML-scripts/](SAML-scripts/README.md)

@@ -282,9 +282,9 @@ setAttribute('Domain', 'CORP\\' + LoginUser.Username);
 | Capability | Dynamic Role | App Policy Script | SAML Script |
 |---|---|---|---|
 | Runs during | Login | App access / portal refresh | SAML SSO |
-| `module()` support | No | Yes | Not documented |
-| SQL / DB queries | No | Yes | Not documented |
-| User `Status` / `StatusEnum` | No (DB only) | Yes | Not documented |
+| `module()` support | No | Yes | Yes (`module('User')` confirmed) |
+| SQL / DB queries | No | Yes | Possible via `module('User')` |
+| User `Status` / `StatusEnum` | No (DB only) | Yes | Not confirmed |
 | `User.Get()` / `LoginUser.Get()` attributes | Limited set | Extended set | Extended set |
 | `User.Properties.Properties` (raw dir attrs) | Yes | No | No |
 | Role/group membership checks | Yes | Yes (`user.InRole()`) | Yes (`LoginUser.RoleNames`) |
