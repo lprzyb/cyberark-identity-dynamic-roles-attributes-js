@@ -45,33 +45,128 @@ A reference for engineers deciding which scripting context to use and why.
 
 ### 2. Application Policy Scripts (Authentication Policy Scripts)
 
-**What it is:** JavaScript that runs when a user authenticates to a specific application. Used to control which authentication profile (MFA level, methods) is applied.
+**What it is:** JavaScript that runs when a user launches an application or the User Portal refreshes. Used to control whether the app is accessible and which authentication profile (MFA level) applies.
 
-**When it runs:** At application access time, after the user is identified but before authentication is fully resolved.
+**When it runs:** At application access time and on User Portal refresh, after the user is identified.
 
-**Why it is more powerful:** This context supports `module()` imports, which unlocks database access and a richer user model. It is not on the critical login path in the same tight way, so heavier operations are acceptable.
+**Important:** When a policy script is present, **any authentication rules configured in the UI are ignored**. The script is the sole authority.
 
-**What you can do (beyond Dynamic Roles):**
-- Import modules: `module('User')`, `module('SqlQuery')`
-- Query the database directly with SQL
-- Read `Status` / `StatusEnum` from the database
-- Apply or change authentication profiles at runtime
-- Access a broader set of user attributes
+**Entry point:**
+> Apps > [App] > Policy tab > "Use script to specify authentication rules"
 
-**Example — check user status via SQL:**
+**Why it is more powerful:** This context supports `module()` imports, which unlocks database access and a richer user model. It is not on the tight login path that Dynamic Roles are, so heavier operations are acceptable — though CyberArk advises avoiding lengthy/complex calculations since scripts run frequently.
+
+#### Available Objects
+
+**`context`** — environmental data:
+```javascript
+context.lastAuthenticated  // datetime of last password/IWA login; use .ToString()
+context.authLevel          // integer: 1 = always allowed, 2 = default profile
+context.onPrem             // boolean: true if on corporate intranet
+context.ipAddress          // string: user's internet-visible IP (may be NAT/proxy)
+```
+
+**`client`** — browser/OS data:
+```javascript
+client.oS           // operating system
+client.application  // thick client app (e.g. Outlook, Lync)
+client.userAgent    // browser identity string
+```
+
+**`application`** — app attributes:
+```javascript
+application.Get('WebAppType')  // matches columns in the Application table (Data Dictionary)
+```
+
+**`policy`** — the result you set:
+```javascript
+policy.Locked = true                          // block app launch
+policy.Reason = 'Access outside office hours' // custom denial message
+policy.RequiredLevel = 1                      // 1 = always allowed, 2 = default profile
+policy.AuthenticationProfile = 'MFA Required' // must exactly match profile name
+```
+
+#### Modules
+
+**`module('User')`** — richer user object than Dynamic Roles:
+```javascript
+var umod = module('User');
+var user = umod.GetCurrentUser();
+
+user.DisplayName
+user.Username
+user.Mail
+user.Uuid
+user.UserType
+user.DirectoryServiceUuid
+user.IsIdentityCookiePresent
+
+user.InRole('role name')                  // boolean role membership check
+user.Properties.Get('userPrincipalName')  // retrieve directory property
+user.GetRiskLevel(application)            // "Normal", "Low", "Med", "High", "Unknown", "SystemUnavailable"
+```
+
+**`module('SqlQuery')`** — query CyberArk database tables (same tables visible in Reports):
 ```javascript
 var sqlMod = module('SqlQuery');
-var result = sqlMod.query(
-    "SELECT StatusEnum FROM User WHERE Username = '" + User.Username + "'"
-);
-var userStatus = result[0].StatusEnum;
+var result = sqlMod.query('SELECT StatusEnum FROM User WHERE Username = \'' + user.Username + '\'');
+var status = result[0].StatusEnum;  // "Active", "Invited", "Suspended"
+```
 
-if (userStatus === 'Invited') {
+**`module('Utils')`** — geolocation helpers:
+```javascript
+var utils = module('Utils');
+var loc = utils.getIPLocation(context.ipAddress);
+// loc.city, loc.countryCode, loc.countryName, loc.latitude, loc.longitude
+
+var km = utils.getGeoDistance(lat1, lat2, lon1, lon2);  // distance in kilometers
+```
+
+#### Examples
+
+**Block app if off-premises and not a sysadmin:**
+```javascript
+if (!context.onPrem) {
+    var umod = module('User');
+    var user = umod.GetCurrentUser();
+    if (user.InRole('sysadmin')) {
+        policy.RequiredLevel = 2;
+    } else {
+        policy.Locked = true;
+        policy.Reason = 'Remote access requires sysadmin role';
+    }
+}
+```
+
+**Require stronger MFA for invited/unactivated accounts:**
+```javascript
+var sqlMod = module('SqlQuery');
+var umod = module('User');
+var user = umod.GetCurrentUser();
+var result = sqlMod.query('SELECT StatusEnum FROM User WHERE Username = \'' + user.Username + '\'');
+
+if (result[0].StatusEnum === 'Invited') {
     policy.AuthenticationProfile = 'Email MFA Required';
 }
 ```
 
-**Docs:** https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/jsdatapolicyscript.htm#SqlQuerymodule
+**Block access from high-risk geolocations:**
+```javascript
+var utils = module('Utils');
+var loc = utils.getIPLocation(context.ipAddress);
+if (loc.countryCode !== 'US' && loc.countryCode !== 'PL') {
+    policy.Locked = true;
+    policy.Reason = 'Access from this region is not permitted';
+}
+```
+
+**Debugging — use `trace()`:**
+```javascript
+trace('User status: ' + result[0].StatusEnum);  // visible in Test > Trace section
+// Note: non-string values require .toString()
+```
+
+**Docs:** https://docs.cyberark.com/identity/latest/en/content/applications/appsscriptref/jsdatapolicyscript.htm
 
 ---
 
@@ -174,16 +269,21 @@ setAttribute('Domain', 'CORP\\' + LoginUser.Username);
 
 | Capability | Dynamic Role | App Policy Script | SAML Script |
 |---|---|---|---|
-| Runs during | Login | App access | SAML SSO |
+| Runs during | Login | App access / portal refresh | SAML SSO |
 | `module()` support | No | Yes | Yes |
 | SQL / DB queries | No | Yes | Yes |
-| User `Status` field | No (DB only) | Yes | Yes |
-| `User.Get()` attributes | Limited set | Extended set | Extended set |
+| User `Status` / `StatusEnum` | No (DB only) | Yes | Yes |
+| `User.Get()` / `LoginUser.Get()` attributes | Limited set | Extended set | Extended set |
 | `User.Properties.Properties` (raw dir attrs) | Yes | Yes | Yes |
-| Role/group membership checks | Yes | Yes | Yes |
-| Modify auth profile | No | Yes | No |
+| Role/group membership checks | Yes | Yes (`user.InRole()`) | Yes (`LoginUser.RoleNames`) |
+| User risk level | No | Yes (`user.GetRiskLevel()`) | No |
+| IP address / geolocation | No | Yes (`context`, `module('Utils')`) | No |
+| OS / browser detection | No | Yes (`client` object) | No |
+| Block app access | No | Yes (`policy.Locked`) | No |
+| Modify auth profile | No | Yes (`policy.AuthenticationProfile`) | No |
 | Customize SAML claims | No | No | Yes |
-| Performance constraint | High (login path) | Moderate | Moderate |
+| UI auth rules still apply | — | No (script overrides all) | — |
+| Performance constraint | High (login path) | Moderate (runs frequently) | Moderate |
 
 ---
 
